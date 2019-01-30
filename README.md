@@ -24,12 +24,33 @@ $JustIn = new JustIn('login', 'pass', 'api_key');
 - **getOrderStickerLink** - Получить стикер заказа с именем
 - **getOrderStickerLinkWithContact** - Получить стикер заказа с контактом
 
-Для фильтрации результатов методы принимают массив фильтров
+Для фильтрации результатов методы принимают массив массивов фильтров
 ```
 $JustIn->getCities([
-  'name' => 'code | descr', filtered field name
-  'comparison' => 'equal | not | less | more | in | between | not in | less or equal | more or equal | like',
-  'leftvalue' => '', left limit
-  'rightvalue' => '', right limit
+  [
+    'name' => 'code | descr', filtered field name
+    'comparison' => 'equal | not | less | more | in | between | not in | less or equal | more or equal | like',
+    'leftvalue' => '', left limit
+    'rightvalue' => '', right limit
+  ]
 ]);
+```
+
+Пример
+```
+require 'JustIn.php';
+
+$JustIn = new JustIn('****', '****', '****', 'ru');
+
+$res = $JustIn->getCities([
+    [
+        'name' => 'descr',
+        'comparison' => 'equal',
+        'leftValue' => 'Киев'
+    ]
+]);
+
+echo '<pre>';
+print_r($res);
+echo '<pre>';
 ```
