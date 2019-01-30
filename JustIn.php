@@ -192,6 +192,10 @@ class JustIn
         curl_setopt($curl, CURLOPT_POST, count($data));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $this->pack($data));
 
+        echo '<pre>';
+        print_r($this->pack($data));
+        echo '<pre>'; //!!!ARRAY_PRINT!!!
+
         $result = curl_exec($curl);
         curl_close($curl);
 
@@ -236,17 +240,26 @@ class JustIn
      */
     private function prepareRequestDataTemplate($type, $methodName, $requestType = 'getData', $filter = [], $top = 0, $params = [])
     {
-        return [
+        $template = [
             'keyAccount' => $this->login,
             'sign' => $this->getSign(),
             'request' => $requestType,
             'type' => $type,
             'name' => $methodName,
-            'language' => $this->lang,
-            'params' => $params,
-            'filter' => $filter,
-            'TOP' => $top,
+            'language' => $this->lang
         ];
+
+        if ($filter) {
+            $template['filter'] = $filter;
+        }
+        if ($top) {
+            $template['TOP'] = $top;
+        }
+        if ($params) {
+            $template['params'] = $params;
+        }
+
+        return $template;
     }
 
     /**
@@ -256,20 +269,26 @@ class JustIn
      */
     public function getApiKey()
     {
-        return $this->sendRequest(
+        $result = $this->sendRequest(
             $this->apiUrnRequest,
             $this->prepareRequestDataTemplate(
                 'infoData',
                 'getSenderUUID',
                 'getData',
-                [
+                [[
                     'name' => 'login',
                     'comparison' => 'equal',
                     'leftValue' => $this->login
-                ],
+                ]],
                 1
             )
         );
+
+        if ($result['data'][0]['fields']['counterpart']['uuid']) {
+            return $result['data'][0]['fields']['counterpart']['uuid'];
+        }
+
+        return false;
     }
 
     /**
