@@ -192,10 +192,6 @@ class JustIn
         curl_setopt($curl, CURLOPT_POST, count($data));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $this->pack($data));
 
-        echo '<pre>';
-        print_r($this->pack($data));
-        echo '<pre>'; //!!!ARRAY_PRINT!!!
-
         $result = curl_exec($curl);
         curl_close($curl);
 
